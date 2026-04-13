@@ -1,10 +1,15 @@
-import { DataProvider } from "./context/DataContext"
+import { UserProvider } from "./context/UserContext"
+import { DMProvider } from "./context/DMContext";
 
 function App() {
   return (
-    <DataProvider>
-      
-    </DataProvider>
+    <UserProvider>
+      <DMProvider>
+        <p className="text-red-500">
+          Hello world!
+        </p>
+      </DMProvider>
+    </UserProvider>
   )
 }
 
