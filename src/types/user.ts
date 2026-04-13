@@ -1,10 +1,11 @@
+import { use } from "react";
+
 export const Presence = {
     Offline: 0,
     Online: 1,
     DND: 2,
     Idle: 3,
 } as const;
-
 export type Presence = typeof Presence[keyof typeof Presence];
 
 export class User {
@@ -34,32 +35,51 @@ export class User {
         this.presence = presence;
     }
 
-    public setUsername(username: string) {
-        this.username = username;
+    clone(): User {
+        return new User(
+            this.username,
+            this.displayname,
+            this.pfp,
+            this.bio,
+            this.status,
+            this.joinDate,
+            this.presence
+        )
     }
 
-    public setDisplayname(displayname: string) {
-        this.displayname = displayname;
+    public setUsername(_username: string): void {
+        if (typeof _username !== "string") return;
+        this.username = _username;
     }
 
-    public setPfp(pfp: string) {
-        this.pfp = pfp;
+    public setDisplayname(_displayname: string) {
+        if (typeof _displayname !== "string") return;
+        this.displayname = _displayname;
     }
 
-    public setBio(bio: string) {
-        this.bio = bio;
+    public setPfp(_pfp: string) {
+        if (typeof _pfp !== "string") return;
+        this.pfp = _pfp;
     }
 
-    public setStatus(status: string) {
-        this.status = status;
+    public setBio(_bio: string) {
+        if (typeof _bio !== "string") return;
+        this.bio = _bio;
     }
 
-    public setJoinDate(joinDate: Date) {
-        this.joinDate = joinDate;
+    public setStatus(_status: string) {
+        if (typeof _status !== "string") return;
+        this.status = _status;
     }
 
-    public setPresence(presence: Presence) {
-        this.presence = presence;
+    public setJoinDate(_joinDate: Date) {
+        if (!(_joinDate instanceof Date)) return;
+        this.joinDate = _joinDate;
+    }
+
+    public setPresence(_presence: Presence) {
+        if (!Object.values(Presence).includes(_presence)) return;
+        this.presence = _presence;
     }
 
     // make this only return without seconds mins and hours
