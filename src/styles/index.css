@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+@theme {
+  --color-blurple: #5865F2;
+  --color-void: #000000;
+  --color-abyss: #070709;
+  --color-dark: #131416;
+  --color-surface: #232327;
+  --color-darkermist: #121214;
+  --color-darkmist: #1A1A1E;
+  --color-mist: #9D9EA5;
+  --color-transvoid: rgba(0, 0, 0, 0.75)
+}
