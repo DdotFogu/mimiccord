@@ -1,4 +1,4 @@
-import { UserProvider } from "./context/UserContext"
+import { UserProvider } from "./context/UserContext";
 import { DMProvider } from "./context/DMContext";
 import { Routes, Route } from "react-router";
 import Creator from "./pages/Creator";
@@ -16,7 +16,7 @@ function App() {
         </Routes>
       </DMProvider>
     </UserProvider>
-  )
+  );
 }
 
 export default App;

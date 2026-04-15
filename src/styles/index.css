@@ -1,18 +1,33 @@
 @import "tailwindcss";
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
 }
 
 @theme {
-  --color-blurple: #5865F2;
+  --color-blurple: #5865f2;
   --color-void: #000000;
   --color-abyss: #070709;
   --color-dark: #131416;
   --color-surface: #232327;
   --color-darkermist: #121214;
-  --color-darkmist: #1A1A1E;
-  --color-mist: #9D9EA5;
-  --color-transvoid: rgba(0, 0, 0, 0.75)
+  --color-darkmist: #1a1a1e;
+  --color-mist: #9d9ea5;
+  --color-transvoid: rgba(0, 0, 0, 0.75);
+}
+
+@layer utilities {
+  .popup-scroll::-webkit-scrollbar {
+    width: 5px;
+  }
+  .popup-scroll::-webkit-scrollbar-track {
+    border-radius: 5px;
+  }
+  .popup-scroll::-webkit-scrollbar-thumb {
+    background: #fff;
+    border-radius: 5px;
+  }
 }

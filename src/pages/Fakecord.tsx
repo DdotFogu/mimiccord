@@ -1,8 +1,5 @@
 const Fakecord = () => {
-    return(
-        <>
-        </>
-    )
-}
+  return <></>;
+};
 
 export default Fakecord;

@@ -1,152 +1,106 @@
-import { User, Presence } from "./user";
-import { Message, Content } from "./message";
+import { User } from "./user";
+import { Message } from "./message";
 
-// add prints for debugging 
+// add prints for debugging
 // add check for when user count is below 2
 
 export class DM {
-    public messages: Message[];
-    public users: Map<string, [User, number]>;
-    public name: string;
-    public pfp: string;
-    
-    constructor(
-        _messages: Message[] = [],
-        _users: User[] = [],
-        _name: string = "Unknown",
-        _pfp: string = "Unknown",
-    ) {
-        this.messages = _messages;
-        this.users = new Map<string, [User, number]>();
-        this.name = _name;
-        this.pfp = _pfp;
+  public messages: Message[];
+  public users: Map<string, { user: User; occurance: number }>;
+  public name: string;
+  public pfp: string;
 
-        _users.forEach((user) => {
-            if(!this.users.has(user.username)) {
-                this.users.set(user.username, [user, 0]);   
-            }
-        })
+  constructor(
+    _messages: Message[] = [],
+    _users: User[] = [],
+    _name: string = "Unknown",
+    _pfp: string = "Unknown",
+  ) {
+    this.messages = _messages;
+    this.users = new Map<string, { user: User; occurance: number }>();
+    this.name = _name;
+    this.pfp = _pfp;
 
-        this._update();
+    _users.forEach((user) => {
+      if (!this.users.has(user.id)) {
+        this.users.set(user.id, { user: user, occurance: 0 });
+      }
+    });
+
+    this._update();
+  }
+
+  public _update() {
+    if (!DM.IsGroup(this.users)) {
+      const users = [...this.users.values()];
+
+      this.name = users[1].user.displayname;
+      this.pfp = users[1].user.pfp;
+
+      // make a get user func that returns user in array
+    }
+  }
+
+  public addMessage(_message: Message) {
+    this.messages.push(_message);
+    this.users.get(_message.owner.id)!.occurance++;
+  }
+
+  public removeMessage(_message: number | Message): void {
+    if (_message instanceof Message) {
+      this.users.get(_message.owner.id)!.occurance--;
+      this.messages = this.messages.filter((msg) => msg !== _message);
+    } else {
+      this.users.get(this.messages[_message as number].owner.username)!
+        .occurance--;
+      this.messages = this.messages.filter((_, index) => index !== _message);
+    }
+  }
+
+  public popMessage(): Message | undefined {
+    const popped = this.messages.pop();
+    if (popped) {
+      this.users.get(popped.owner.id)!.occurance--;
+      return popped;
+    } else return undefined;
+  }
+
+  public addUser(_user: User) {
+    if (!this.users.has(_user.id)) {
+      this.users.set(_user.id, { user: _user, occurance: 0 });
     }
 
-    public _update() {
-        if (!DM.IsGroup(this.users)) {
-            const users = [...this.users.values()];
-            
-            this.name = users[1][0].displayname;
-            this.pfp = users[1][0].pfp;;
+    this._update();
+  }
 
-            // make a get user func that returns user in array
-        }
+  public removeUser(_user: User) {
+    if (this.users.has(_user.id)) {
+      this.messages = this.messages.filter(
+        (message) => message.owner.id !== _user.id,
+      );
+      this.users.delete(_user.id);
     }
 
-    public addMessage(_message: Message) {
-        this.messages.push(_message);
-        this.users[_message.owner.username].occurance++;
-    }
+    this._update();
+  }
 
-    public removeMessage(_message: number | Message): void {
-        if (_message instanceof Message) {
-            this.users[_message.owner.username].occurance--;
-            this.messages = this.messages.filter(msg => msg !== _message);
-        } else {
-            this.users[this.messages[_message as number].owner.username].occurance--;
-            this.messages = this.messages.filter((_, index) => index !== _message);
-        }
-    }
+  public setName(_name: string) {
+    if (!DM.IsGroup(this.users)) return;
 
-    public popMessage(): Message {
-        const popped: Message = this.messages.pop();
-        this.users[popped.owner.username].occurance--;
-        return popped;
-    }
+    this.name = _name;
+  }
 
-    public addUser(_user: User) {
-        if(!this.users.has(_user.username)) {
-            this.users.set(_user.username, [_user, 0]);   
-        }
+  public setPfp(_pfp: string) {
+    if (!DM.IsGroup(this.users)) return;
 
-        this._update();
-    }
+    this.name = _pfp;
+  }
 
-    public removeUser(_user: User) {
-        if(this.users.has(_user.username)) {
-            this.messages = this.messages.filter(message => message.owner.username !== _user.username);
-            this.users.delete(_user.username);
-        }
+  public static IsGroup(
+    users: Map<string, { user: User; occurance: number }>,
+  ): boolean {
+    const isGroup = users.size > 2 ? true : false;
 
-        this._update();
-    }
-
-    public setName(_name: string) {
-        if (!DM.IsGroup(this.users)) return
-
-        this.name = _name;
-    }
-
-    public setPfp(_pfp: string) {
-        if (!DM.IsGroup(this.users)) return
-
-        this.name = _pfp;
-    }
-
-    public static IsGroup(users: Map<string, [User, number]>): boolean {
-        const isGroup =
-            users.size > 2 ?
-            true :
-            false
-
-        return isGroup;
-    }
-}
-
-// remove this later
-
-export const runDemo = () => {
-    let ddot = new User(
-        "ddot2009",
-        "ddot",
-        "ddot PFP",
-        "Mr Beany Boi",
-        "no status",
-        new Date(),
-        Presence.Online
-    )
-
-    let chairguy = new User(
-        "typeshiitt33",
-        "chairguy",
-        "cg PFP",
-        "no bio",
-        "no status",
-        new Date(),
-        Presence.Online
-    )
-
-    let nails = new User(
-        "nails",
-        "lin",
-        "nails PFP",
-        "no bio",
-        "no status",
-        new Date(),
-        Presence.Online
-    )
-
-    let zeuz = new User(
-        "zeuz",
-        "zuez",
-        "zeuz PFP",
-        "no bio",
-        "no status",
-        new Date(),
-        Presence.Online
-    )
-
-    const textMsg : Message = new Message(nails, new Date(), new Content("hello this is waffles speakling"))
-
-    let newDm = new DM([textMsg, textMsg], [ddot, chairguy, nails, zeuz], "cool name", "cool pfp")
-    newDm.removeUser(nails);
-    console.log(newDm)
+    return isGroup;
+  }
 }
