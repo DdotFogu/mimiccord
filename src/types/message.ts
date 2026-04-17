@@ -40,7 +40,6 @@ export class Message {
   }
 
   // setText instead
-
   public setContent(_content: Content) {
     this.content = _content;
   }

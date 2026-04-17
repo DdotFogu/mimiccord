@@ -1,4 +1,5 @@
 import { UsersPopup } from "../componets/sections/UsersPopup.tsx";
+import { DMEdit } from "../componets/sections/DMEdit.tsx";
 
 import { useState } from "react";
 
@@ -14,6 +15,7 @@ const Creator = () => {
   return (
     <>
       <UsersPopup enabled={userPopup} onPopupExit={() => handleUserExit()} />
+      <DMEdit />
     </>
   );
 };

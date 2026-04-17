@@ -87,9 +87,12 @@ export class User {
     this.presence = _presence;
   }
 
-  // make this only return without seconds mins and hours
   public getDate(): Date {
     return this.joinDate;
+  }
+
+  public getDateString(): string {
+    return `${this.getDate().toDateString().slice(0, 2)}`;
   }
 
   public isEqual(_user: User) {

@@ -4,12 +4,17 @@ import pfpDefault from "../assets/pfps/default-grey.webp";
 
 const UsersContext = React.createContext<{
   users: Record<string, User>;
+  getUser: (target: string) => User;
 }>({
   users: {},
+  getUser: () => new User(),
 });
 
+// TODO: YOU CAN PROLLY TURN THIS INTO A RESUABLE COMPONENT
+// ALSO ADD A WAY FOR RETURN VALUES
+
 const UsersUpdateContext = React.createContext<{
-  addUser: (user?: User) => void;
+  addUser: (user: User) => void;
   removeUser: (target: User | string) => void;
   modUser: (mod: UserModSelection, target: User | string, value: any) => void;
 }>({
@@ -60,6 +65,16 @@ export function UserProvider({ children }: any) {
       Presence.Online,
       "superuser",
     ),
+    testuser: new User(
+      "typeshiitt33",
+      "chairguy",
+      pfpDefault,
+      "Welcome to Mimiccord!",
+      "Use this panel to edit my details.",
+      new Date(),
+      Presence.Online,
+      "testuser",
+    ),
   });
 
   // add a throw error is user is null
@@ -69,10 +84,9 @@ export function UserProvider({ children }: any) {
     value: any,
   ) => {
     const user = users[typeof target === "string" ? target : target.id];
-    if (!user) return;
-
     const method = MOD_METHOD_MAP[mod];
-    if (!method) return;
+
+    if (!user || method) return;
 
     const updatedUser = user.clone();
     (updatedUser[method] as Function)(value);
@@ -103,12 +117,16 @@ export function UserProvider({ children }: any) {
     setUsers(updatedRecord);
   };
 
+  const getUser = (target: string): User => {
+    return users[target];
+  };
+
   useEffect(() => {
     console.log(users);
   }, [users]);
 
   return (
-    <UsersContext.Provider value={{ users }}>
+    <UsersContext.Provider value={{ users, getUser }}>
       <UsersUpdateContext.Provider value={{ addUser, removeUser, modUser }}>
         {children}
       </UsersUpdateContext.Provider>

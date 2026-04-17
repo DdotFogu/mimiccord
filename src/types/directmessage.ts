@@ -1,106 +1,150 @@
+import pfpDefault from "../assets/pfps/default-grey.webp";
+
 import { User } from "./user";
 import { Message } from "./message";
 
 // add prints for debugging
-// add check for when user count is below 2
 
 export class DM {
   public messages: Message[];
-  public users: Map<string, { user: User; occurance: number }>;
+  public members: Map<string, { user: User }>;
+  public group: boolean;
   public name: string;
   public pfp: string;
+  readonly id: string;
 
   constructor(
     _messages: Message[] = [],
-    _users: User[] = [],
+    _members: User[] | Map<string, { user: User }> = [],
+    _group: boolean = false,
     _name: string = "Unknown",
     _pfp: string = "Unknown",
+    _id: string = crypto.randomUUID(),
   ) {
     this.messages = _messages;
-    this.users = new Map<string, { user: User; occurance: number }>();
+    this.members = new Map<string, { user: User }>();
+    this.group = _group;
     this.name = _name;
     this.pfp = _pfp;
+    this.id = _id;
 
-    _users.forEach((user) => {
-      if (!this.users.has(user.id)) {
-        this.users.set(user.id, { user: user, occurance: 0 });
-      }
-    });
-
-    this._update();
-  }
-
-  public _update() {
-    if (!DM.IsGroup(this.users)) {
-      const users = [...this.users.values()];
-
-      this.name = users[1].user.displayname;
-      this.pfp = users[1].user.pfp;
-
-      // make a get user func that returns user in array
-    }
-  }
-
-  public addMessage(_message: Message) {
-    this.messages.push(_message);
-    this.users.get(_message.owner.id)!.occurance++;
-  }
-
-  public removeMessage(_message: number | Message): void {
-    if (_message instanceof Message) {
-      this.users.get(_message.owner.id)!.occurance--;
-      this.messages = this.messages.filter((msg) => msg !== _message);
+    if (Array.isArray(_members)) {
+      _members.forEach((user) => {
+        if (!this.members.has(user.id)) {
+          this.members.set(user.id, { user: user });
+        }
+      });
     } else {
-      this.users.get(this.messages[_message as number].owner.username)!
-        .occurance--;
-      this.messages = this.messages.filter((_, index) => index !== _message);
+      this.members = _members;
+    }
+
+    this.updateGroup();
+  }
+
+  clone(): DM {
+    return new DM(
+      this.messages,
+      this.members,
+      this.group,
+      this.name,
+      this.pfp,
+      this.id,
+    );
+  }
+
+  // should be able to pass in nothing with new Message
+
+  public addMessage(_message: Message): void {
+    this.messages.push(_message);
+  }
+
+  public removeMessage(_target: number | Message): void {
+    const idxToRemove = this.getMessageIdx(_target);
+
+    if (this.messages.length >= idxToRemove) {
+      this.messages.splice(idxToRemove, 1);
     }
   }
 
-  public popMessage(): Message | undefined {
-    const popped = this.messages.pop();
-    if (popped) {
-      this.users.get(popped.owner.id)!.occurance--;
-      return popped;
-    } else return undefined;
+  public swapMessages(target1: Message | number, target2: Message | number) {
+    const idx1 = this.getMessageIdx(target1);
+    const idx2 = this.getMessageIdx(target2);
+    if (
+      idx1 < 0 ||
+      idx2 < 0 ||
+      idx1 >= this.messages.length ||
+      idx2 >= this.messages.length
+    )
+      return;
+
+    [this.messages[idx1], this.messages[idx2]] = [
+      this.messages[idx2],
+      this.messages[idx1],
+    ];
   }
 
-  public addUser(_user: User) {
-    if (!this.users.has(_user.id)) {
-      this.users.set(_user.id, { user: _user, occurance: 0 });
-    }
+  public setMessage(_target: number | Message, value: Message): void {
+    const idxToSet = this.getMessageIdx(_target);
 
-    this._update();
+    if (this.messages.length >= idxToSet) {
+      this.messages[idxToSet] = value;
+    }
   }
 
-  public removeUser(_user: User) {
-    if (this.users.has(_user.id)) {
-      this.messages = this.messages.filter(
-        (message) => message.owner.id !== _user.id,
-      );
-      this.users.delete(_user.id);
-    }
+  public getMessageIdx(target: Message | number): number {
+    return target instanceof Message
+      ? this.messages.findIndex((el) => el === target)
+      : target;
+  }
 
-    this._update();
+  public addMember(_user: User) {
+    if (!this.members.has(_user.id)) {
+      this.members.set(_user.id, { user: _user });
+      this.updateGroup();
+    }
+  }
+
+  public removeMember(_target: User | string) {
+    const idToRemove: string = this.getMemberId(_target);
+
+    if (this.members.has(idToRemove)) {
+      this.members.delete(idToRemove);
+      this.updateGroup();
+    }
+  }
+
+  public getMemberId(target: User | string): string {
+    return target instanceof User ? target.id : target;
   }
 
   public setName(_name: string) {
-    if (!DM.IsGroup(this.users)) return;
-
     this.name = _name;
   }
 
   public setPfp(_pfp: string) {
-    if (!DM.IsGroup(this.users)) return;
-
-    this.name = _pfp;
+    this.pfp = _pfp;
   }
 
-  public static IsGroup(
-    users: Map<string, { user: User; occurance: number }>,
-  ): boolean {
-    const isGroup = users.size > 2 ? true : false;
+  public updateGroup() {
+    const size: number = this.members.size;
 
-    return isGroup;
+    if (size === 2) {
+      this.group = false;
+
+      const user = Array.from(this.members.values())[1].user;
+      this.setName(user.displayname);
+      this.setPfp(user.pfp);
+    } else {
+      this.group = true;
+
+      this.setName(this.allNames());
+      this.setPfp(pfpDefault);
+    }
+  }
+
+  public allNames(): string {
+    return Array.from(this.members.values())
+      .map((m) => m.user.displayname)
+      .join(", ");
   }
 }
