@@ -65,16 +65,6 @@ export function UserProvider({ children }: any) {
       Presence.Online,
       "superuser",
     ),
-    testuser: new User(
-      "typeshiitt33",
-      "chairguy",
-      pfpDefault,
-      "Welcome to Mimiccord!",
-      "Use this panel to edit my details.",
-      new Date(),
-      Presence.Online,
-      "testuser",
-    ),
   });
 
   // add a throw error is user is null
@@ -86,7 +76,7 @@ export function UserProvider({ children }: any) {
     const user = users[typeof target === "string" ? target : target.id];
     const method = MOD_METHOD_MAP[mod];
 
-    if (!user || method) return;
+    if (!user || !method) return;
 
     const updatedUser = user.clone();
     (updatedUser[method] as Function)(value);

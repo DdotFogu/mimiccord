@@ -108,7 +108,7 @@ export const UserEdit = ({ user }: EditProps) => {
         />
 
         <select
-          className="w-[100%] bg-darkermist px-3 py-2 rounded-md"
+          className="w-full bg-darkermist px-3 py-2 rounded-md"
           value={user.presence}
           onChange={(e) =>
             handleValueChange(

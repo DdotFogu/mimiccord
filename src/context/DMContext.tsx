@@ -1,23 +1,28 @@
 import React, { useContext, useState, useEffect } from "react";
 import { DM } from "../types/directmessage";
-import { useUsers } from "./UserContext";
+
+const initalDmId: string = crypto.randomUUID();
 
 const DMContext = React.createContext<{
   dms: Map<string, DM>;
-  getDM: (target: string) => DM;
+  selectedDm: string;
+  getDm: (target: string) => DM;
 }>({
   dms: new Map(),
-  getDM: () => new DM(),
+  selectedDm: initalDmId,
+  getDm: () => new DM(),
 });
 
 const DMUpdateContext = React.createContext<{
-  addDM: (dm: DM) => void;
-  removeDM: (target: string) => void;
-  modDM: (mod: DMModSelection, target: DM | string, value: any) => void;
+  addDm: (dm: DM) => void;
+  removeDm: (target: string) => void;
+  modDm: (mod: DMModSelection, target: DM | string, value: any) => void;
+  selectDm: (target: string | DM) => void;
 }>({
-  addDM: () => {},
-  removeDM: () => {},
-  modDM: () => {},
+  addDm: () => {},
+  removeDm: () => {},
+  modDm: () => {},
+  selectDm: () => {},
 });
 
 export function useDMs() {
@@ -53,11 +58,19 @@ const MOD_METHOD_MAP: Record<DMModSelection, keyof DM> = {
 };
 
 export function DMProvider({ children }: any) {
-  const { users } = useUsers();
+  const [dms, setDms] = useState<Map<string, DM>>(
+    new Map([[initalDmId, new DM(initalDmId)]]),
+  );
 
-  const [dms, setDms] = useState<Map<string, DM>>(new Map());
+  const [selectedDm, setSelectedDm] = useState<string>(initalDmId);
 
-  const modDM = (mod: DMModSelection, target: DM | string, value: any) => {
+  const selectDm = (target: string | DM) => {
+    var id = typeof target === "string" ? target : target.id;
+    setSelectedDm(id);
+    console.log("Selected direct messages of id: ", id);
+  };
+
+  const modDm = (mod: DMModSelection, target: DM | string, value: any) => {
     const dm = dms.get(typeof target === "string" ? target : target.id);
     const method = MOD_METHOD_MAP[mod];
 
@@ -69,12 +82,12 @@ export function DMProvider({ children }: any) {
     setDms(new Map(dms.set(updated.id, updated)));
   };
 
-  const addDM = (dm: DM = new DM([], [users["superuser"]])): DM => {
+  const addDm = (dm: DM = new DM()): DM => {
     setDms(new Map(dms).set(dm.id, dm));
     return dm;
   };
 
-  const removeDM = (target: string) => {
+  const removeDm = (target: string) => {
     if (!dms.get(target)) return;
 
     const updatedMap = new Map(dms);
@@ -82,7 +95,7 @@ export function DMProvider({ children }: any) {
     setDms(updatedMap);
   };
 
-  const getDM = (target: string): DM => {
+  const getDm = (target: string): DM => {
     return dms.get(target)!;
   };
 
@@ -90,9 +103,13 @@ export function DMProvider({ children }: any) {
     console.log(dms);
   }, [dms]);
 
+  // useEffect(() => {
+  //   console.log(selectedDm);
+  // }, [selectedDm]);
+
   return (
-    <DMContext.Provider value={{ dms, getDM }}>
-      <DMUpdateContext.Provider value={{ addDM, removeDM, modDM }}>
+    <DMContext.Provider value={{ dms, selectedDm, getDm }}>
+      <DMUpdateContext.Provider value={{ addDm, removeDm, modDm, selectDm }}>
         {children}
       </DMUpdateContext.Provider>
     </DMContext.Provider>

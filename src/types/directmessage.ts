@@ -4,25 +4,30 @@ import { User } from "./user";
 import { Message } from "./message";
 
 // add prints for debugging
+// there must always be an owner,
+// undef owner is fine for now as I prototype the first build
 
 export class DM {
   public messages: Message[];
   public members: Map<string, { user: User }>;
+  public owner: User | undefined;
   public group: boolean;
   public name: string;
   public pfp: string;
   readonly id: string;
 
   constructor(
+    _id: string = crypto.randomUUID(),
     _messages: Message[] = [],
     _members: User[] | Map<string, { user: User }> = [],
+    _owner: User | undefined = undefined,
     _group: boolean = false,
-    _name: string = "Unknown",
-    _pfp: string = "Unknown",
-    _id: string = crypto.randomUUID(),
+    _name: string = "Name",
+    _pfp: string = pfpDefault,
   ) {
     this.messages = _messages;
     this.members = new Map<string, { user: User }>();
+    this.owner = _owner;
     this.group = _group;
     this.name = _name;
     this.pfp = _pfp;
@@ -43,12 +48,13 @@ export class DM {
 
   clone(): DM {
     return new DM(
+      this.id,
       this.messages,
       this.members,
+      this.owner,
       this.group,
       this.name,
       this.pfp,
-      this.id,
     );
   }
 
@@ -136,9 +142,6 @@ export class DM {
       this.setPfp(user.pfp);
     } else {
       this.group = true;
-
-      this.setName(this.allNames());
-      this.setPfp(pfpDefault);
     }
   }
 

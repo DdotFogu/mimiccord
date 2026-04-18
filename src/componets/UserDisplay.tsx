@@ -11,15 +11,14 @@ type DisplayProps = {
 export const UserDisplay = ({ user, onEditClick = () => {} }: DisplayProps) => {
   const { removeUser } = useUsersUpdate();
 
-  const handleUserDelete = () => {
-    removeUser(user);
-  };
+  const handleUserDelete = () => removeUser(user);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: -15 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.4, delay: 0.2 } }}
       exit={{ opacity: 0, y: -15, transition: { duration: 0.25 } }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
       className="text-white bg-darkermist min-w-35.5 max-w-35.5 min-h-fit flex flex-col items-center rounded-2xl gap-1 py-2"
     >
       <span className=" font-semibold text-center min-h-6 max-w-35.5 flex flex-col truncate shrink">

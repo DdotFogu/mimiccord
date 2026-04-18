@@ -19,10 +19,10 @@ export class User {
   readonly id: string;
 
   constructor(
-    username: string = "Unknown",
-    displayname: string = "Unknown",
+    username: string = "Username",
+    displayname: string = "Displayname",
     pfp: string = pfpDefault,
-    bio: string = "",
+    bio: string = "Bio",
     status: string = "Offline",
     joinDate: Date = new Date(),
     presence: Presence = Presence.Offline,
