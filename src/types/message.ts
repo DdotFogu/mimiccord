@@ -12,6 +12,10 @@ export class Content {
   public setText(_text: string) {
     this.text = _text;
   }
+
+  public isEmpty(): boolean {
+    return this.text == "";
+  }
 }
 
 // add support for reactions and replys

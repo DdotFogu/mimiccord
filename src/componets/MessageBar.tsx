@@ -1,0 +1,58 @@
+import { IconBtn } from "./IconBtn.tsx";
+import { useDMs, useDMsUpdate, DMModSelection } from "../context/DMContext";
+import { useUsers } from "../context/UserContext";
+import { useState, useRef } from "react";
+import { Message, Content } from "../types/message";
+import Icon from "./Icon";
+
+export const MessageBar = () => {
+  const { selectedDm, getDm } = useDMs();
+  const { modDm } = useDMsUpdate();
+
+  const { getUser } = useUsers();
+
+  const [content, setContent] = useState<Content>(new Content(""));
+  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContent(new Content(e.target.value));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === `Enter` && !content.isEmpty()) {
+      modDm(
+        DMModSelection.AddMessage,
+        selectedDm,
+        new Message(getUser("superuser"), new Date(), content),
+      );
+      setContent(new Content(""));
+    }
+  };
+
+  return (
+    <div className="text-white bg-[#40444B] h-14 w-full flex flex-row justify-start items-center rounded-lg px-2.5 gap-2">
+      <IconBtn svg={<Icon id="icon-add" size={26} />} />
+
+      <input
+        className="w-full text-[#d7d7da] focus:outline-none focus:ring-0"
+        type="text"
+        value={content.text}
+        placeholder={`Message ${getDm(selectedDm).name}`}
+        onChange={(e) => handleMessageChange(e)}
+        onKeyDown={(e) => handleKeyDown(e)}
+      />
+
+      <IconBtn svg={<Icon id="icon-gift" size={20} />} />
+      <IconBtn
+        className="md:flex hidden"
+        svg={<Icon id="icon-gif" size={20} />}
+      />
+      <IconBtn
+        className="md:flex hidden"
+        svg={<Icon id="icon-sticker" size={20} />}
+      />
+      <IconBtn svg={<Icon id="icon-emoji" size={20} />} />
+      <IconBtn svg={<Icon id="icon-apps" size={20} />} />
+    </div>
+  );
+};
+
+export default MessageBar;

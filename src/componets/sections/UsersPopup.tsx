@@ -8,7 +8,7 @@ import { AddDisplay } from "../AddDisplay";
 
 import { useState } from "react";
 import { useUsers, useUsersUpdate } from "../../context/UserContext.tsx";
-import { truncate } from "../../utils/stringUtils.ts";
+import { truncate } from "../../utils/stringutils.ts";
 
 type PopupProps = {
   enabled: boolean;

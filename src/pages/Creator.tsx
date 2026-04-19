@@ -1,5 +1,6 @@
 import { UsersPopup } from "../componets/sections/UsersPopup.tsx";
 import { DMPopup } from "../componets/sections/DMPopup.tsx";
+import { MessageBar } from "../componets/MessageBar.tsx";
 
 import { useState } from "react";
 import { useDMs } from "../context/DMContext";
@@ -71,8 +72,7 @@ const Creator = () => {
           }
         />
       </div>
-
-      <div className="text-white bg-dark h-14 w-full">Message</div>
+      <MessageBar />
     </>
   );
 };

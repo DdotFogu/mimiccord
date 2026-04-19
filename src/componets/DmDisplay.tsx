@@ -1,7 +1,7 @@
 import { DM } from "../types/directmessage.ts";
 import { useDMsUpdate } from "../context/DMContext.tsx";
 import { motion } from "motion/react";
-import { truncate } from "../utils/stringUtils.ts";
+import { truncate } from "../utils/stringutils.ts";
 
 type DisplayProps = {
   dm: DM;
