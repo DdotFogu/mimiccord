@@ -71,7 +71,7 @@ export const UserEdit = ({ user }: EditProps) => {
         </span>
       </span>
 
-      <span className="full flex flex-col gap-2 items-center">
+      <span className="w-full flex flex-col gap-1 items-center justify-start">
         <input
           id="pfp-upload"
           type="file"

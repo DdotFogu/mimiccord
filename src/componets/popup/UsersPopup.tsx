@@ -1,10 +1,10 @@
-import { Popup } from "../Popup";
-import { PopupWindow } from "../PopupWindow.tsx";
-import { UserDisplay } from "../UserDisplay.tsx";
+import { Popup } from "./Popup.tsx";
+import { PopupWindow } from "./PopupWindow.tsx";
 import { AnimatePresence } from "motion/react";
 import { User } from "../../types/user.ts";
-import { UserEdit } from "./UserEdit.tsx";
-import { AddDisplay } from "../AddDisplay";
+import { UserEdit } from "../sections/UserEdit.tsx";
+import { AddDisplay } from "../display/AddDisplay.tsx";
+import { ItemDisplay } from "../display/ItemDisplay.tsx";
 
 import { useState } from "react";
 import { useUsers, useUsersUpdate } from "../../context/UserContext.tsx";
@@ -17,7 +17,7 @@ type PopupProps = {
 
 export const UsersPopup = ({ enabled, onPopupExit }: PopupProps) => {
   const { users } = useUsers();
-  const { addUser } = useUsersUpdate();
+  const { addUser, removeUser } = useUsersUpdate();
 
   const [selectedUserId, setSelectedIdIndex] = useState<string>("superuser");
   const [userEditPopup, setUserEditPopup] = useState<boolean>(false);
@@ -39,12 +39,17 @@ export const UsersPopup = ({ enabled, onPopupExit }: PopupProps) => {
           subtitle="Create Remove and Edit Users"
           close={() => onPopupExit()}
         >
-          <span className=" popup-scroll h-fit min-h-41.5 flex flex-row flex-wrap justify-center items-center p-3 gap-5 overflow-y-auto overflow-x-hidden">
+          <span className=" popup-scroll h-fit min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
             <AnimatePresence>
               {Object.entries(users).map(([key, value]) => (
-                <UserDisplay
+                <ItemDisplay
                   key={key}
-                  user={value}
+                  size={140}
+                  title={value.username}
+                  icon={value.pfp}
+                  deleteable={key !== "superuser" ? true : false}
+                  onDeleteClick={() => removeUser(value.id)}
+                  editable={true}
                   onEditClick={() => handleUserEditClick(value)}
                 />
               ))}

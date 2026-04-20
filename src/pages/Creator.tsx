@@ -1,5 +1,5 @@
-import { UsersPopup } from "../componets/sections/UsersPopup.tsx";
-import { DMPopup } from "../componets/sections/DMPopup.tsx";
+import { UsersPopup } from "../componets/popup/UsersPopup.tsx";
+import { DMPopup } from "../componets/popup/DMPopup.tsx";
 import { MessageBar } from "../componets/MessageBar.tsx";
 
 import { useState } from "react";
@@ -32,7 +32,7 @@ const Creator = () => {
   const handleDMClick = () => setDMPopup(true);
   const handleDMExit = () => setDMPopup(false);
 
-  const { selectedDm } = useDMs();
+  const { selectedDm, getDm } = useDMs();
 
   return (
     <>
@@ -72,7 +72,7 @@ const Creator = () => {
           }
         />
       </div>
-      <MessageBar />
+      <MessageBar dm={getDm(selectedDm!)} />
     </>
   );
 };

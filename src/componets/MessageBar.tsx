@@ -1,17 +1,28 @@
 import { IconBtn } from "./IconBtn.tsx";
-import { useDMs, useDMsUpdate, DMModSelection } from "../context/DMContext";
+import { useDMsUpdate, DMModSelection } from "../context/DMContext";
+import { DM } from "../types/directmessage.ts";
 import { useUsers } from "../context/UserContext";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Message, Content } from "../types/message";
 import Icon from "./Icon";
 
-export const MessageBar = () => {
-  const { selectedDm, getDm } = useDMs();
+type BarProps = {
+  dm: DM | undefined;
+};
+
+export const MessageBar = ({ dm }: BarProps) => {
+  if (!dm) {
+    return (
+      <div className="text-[#72767D] bg-[#40444B] h-14 w-full flex flex-row justify-center items-center rounded-lg px-4">
+        <p className="text-sm">Select a direct message to start chatting.</p>
+      </div>
+    );
+  }
+
   const { modDm } = useDMsUpdate();
-
   const { getUser } = useUsers();
-
   const [content, setContent] = useState<Content>(new Content(""));
+
   const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setContent(new Content(e.target.value));
   };
@@ -20,7 +31,7 @@ export const MessageBar = () => {
     if (e.key === `Enter` && !content.isEmpty()) {
       modDm(
         DMModSelection.AddMessage,
-        selectedDm,
+        dm!.id,
         new Message(getUser("superuser"), new Date(), content),
       );
       setContent(new Content(""));
@@ -29,17 +40,15 @@ export const MessageBar = () => {
 
   return (
     <div className="text-white bg-[#40444B] h-14 w-full flex flex-row justify-start items-center rounded-lg px-2.5 gap-2">
-      <IconBtn svg={<Icon id="icon-add" size={26} />} />
-
+      <IconBtn svg={<Icon id="icon-addnoring" size={26} />} />
       <input
         className="w-full text-[#d7d7da] focus:outline-none focus:ring-0"
         type="text"
         value={content.text}
-        placeholder={`Message ${getDm(selectedDm).name}`}
+        placeholder={`Message ${dm.name}`}
         onChange={(e) => handleMessageChange(e)}
         onKeyDown={(e) => handleKeyDown(e)}
       />
-
       <IconBtn svg={<Icon id="icon-gift" size={20} />} />
       <IconBtn
         className="md:flex hidden"

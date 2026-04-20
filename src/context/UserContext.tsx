@@ -10,9 +10,6 @@ const UsersContext = React.createContext<{
   getUser: () => new User(),
 });
 
-// TODO: YOU CAN PROLLY TURN THIS INTO A RESUABLE COMPONENT
-// ALSO ADD A WAY FOR RETURN VALUES
-
 const UsersUpdateContext = React.createContext<{
   addUser: (user: User) => void;
   removeUser: (target: User | string) => void;

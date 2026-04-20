@@ -1,15 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import { DM } from "../types/directmessage";
 
-const initalDmId: string = crypto.randomUUID();
-
 const DMContext = React.createContext<{
   dms: Map<string, DM>;
-  selectedDm: string;
-  getDm: (target: string) => DM;
+  selectedDm: string | null;
+  getDm: (target: string) => DM | undefined;
 }>({
   dms: new Map(),
-  selectedDm: initalDmId,
+  selectedDm: "",
   getDm: () => new DM(),
 });
 
@@ -58,16 +56,19 @@ const MOD_METHOD_MAP: Record<DMModSelection, keyof DM> = {
 };
 
 export function DMProvider({ children }: any) {
-  const [dms, setDms] = useState<Map<string, DM>>(
-    new Map([[initalDmId, new DM(initalDmId)]]),
-  );
+  const [dms, setDms] = useState<Map<string, DM>>(() => {
+    const id = crypto.randomUUID();
+    return new Map([[id, new DM(id)]]);
+  });
 
-  const [selectedDm, setSelectedDm] = useState<string>(initalDmId);
+  const [selectedDm, setSelectedDm] = useState<string | null>(() => {
+    const firstKey = Array.from(dms.keys())[0];
+    return firstKey;
+  });
 
   const selectDm = (target: string | DM) => {
     var id = typeof target === "string" ? target : target.id;
     setSelectedDm(id);
-    console.log("Selected direct messages of id: ", id);
   };
 
   const modDm = (mod: DMModSelection, target: DM | string, value: any) => {
@@ -93,19 +94,21 @@ export function DMProvider({ children }: any) {
     const updatedMap = new Map(dms);
     updatedMap.delete(target);
     setDms(updatedMap);
+
+    if (target === selectedDm) setSelectedDm(null);
   };
 
-  const getDm = (target: string): DM => {
-    return dms.get(target)!;
+  const getDm = (target: string): DM | undefined => {
+    return dms.get(target);
   };
 
   useEffect(() => {
     console.log(dms);
   }, [dms]);
 
-  // useEffect(() => {
-  //   console.log(selectedDm);
-  // }, [selectedDm]);
+  useEffect(() => {
+    console.log("selected dm id:", selectedDm);
+  }, [selectedDm]);
 
   return (
     <DMContext.Provider value={{ dms, selectedDm, getDm }}>

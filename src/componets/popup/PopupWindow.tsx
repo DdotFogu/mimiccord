@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import Icon from "../Icon.tsx";
 
 type WindowProps = {
   children?: React.ReactNode;
@@ -21,25 +22,19 @@ type CloseProps = {
 
 const PopupClose = ({ close }: CloseProps) => {
   return (
-    <button
-      className="fill-mist cursor-pointer duration-200 hover:fill-white ml-auto"
-      onClick={() => close()}
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="28px"
-        width="28px"
-        viewBox="0 -960 960 960"
-      >
-        <path d="m351.83-277.74-74.09-74.09L405.35-480 277.74-607.17l74.09-74.09L480-553.65l127.17-127.61 74.09 74.09L553.65-480l127.61 128.17-74.09 74.09L480-405.35 351.83-277.74Z" />
-      </svg>
+    <button className="cursor-pointer ml-auto" onClick={() => close()}>
+      <Icon
+        id="icon-close"
+        size={24}
+        className="duration-200 fill-mist hover:fill-white"
+      />
     </button>
   );
 };
 
 const PopupHeader = ({ title, subtitle, close }: HeaderProps) => {
   return (
-    <div className="w-full h-fit bg-darkermist py-3 px-8 rounded-md flex flex-row items-center justify-center gap-2">
+    <div className="w-full h-fit bg-darkermist py-3 px-8 rounded-t-md flex flex-row items-center justify-center gap-2">
       <span className="font-bold text-white mr-auto shrink-0">{title}</span>
       <span className="font-semibold text-mist hidden sm:block truncate min-w-0 shrink">
         {subtitle}
@@ -62,14 +57,14 @@ export const PopupWindow = ({
       initial={{ scale: 0.8 }}
       animate={{ scale: 1, transition: { duration: 0.25 } }}
       exit={{ scale: 0.8, transition: { duration: 0.25 } }}
-      className="bg-darkmist text-white rounded-2xl flex flex-col "
+      className="bg-darkmist text-white rounded-2xl flex flex-col"
       style={{
         width: `${width}vw`,
         height: `${height}vh`,
       }}
     >
       <PopupHeader title={title} subtitle={subtitle} close={close} />
-      {children}
+      <span className="overflow-y-auto p-1">{children}</span>
     </motion.span>
   );
 };

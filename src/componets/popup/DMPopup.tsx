@@ -1,8 +1,8 @@
-import { Popup } from "../Popup.tsx";
-import { PopupWindow } from "../PopupWindow.tsx";
-import { DmDisplay } from "../DmDisplay.tsx";
+import { Popup } from "./Popup.tsx";
+import { PopupWindow } from "./PopupWindow.tsx";
 import { AnimatePresence } from "motion/react";
-import { AddDisplay } from "../AddDisplay";
+import { AddDisplay } from "../display/AddDisplay.tsx";
+import { ItemDisplay } from "../display/ItemDisplay.tsx";
 
 import { useDMs, useDMsUpdate } from "../../context/DMContext.tsx";
 import { DM } from "../../types/directmessage.ts";
@@ -14,7 +14,7 @@ type PopupProps = {
 
 export const DMPopup = ({ enabled, onPopupExit }: PopupProps) => {
   const { dms } = useDMs();
-  const { addDm, selectDm } = useDMsUpdate();
+  const { addDm, selectDm, removeDm } = useDMsUpdate();
 
   const handleDmSelect = (id: string) => {
     selectDm(id);
@@ -31,12 +31,17 @@ export const DMPopup = ({ enabled, onPopupExit }: PopupProps) => {
           subtitle="Create Remove and Select Direct Messages to Edit"
           close={() => onPopupExit()}
         >
-          <span className="popup-scroll h-fit min-h-41.5 flex flex-row flex-wrap justify-center items-center p-3 gap-5 overflow-y-auto overflow-x-hidden">
+          <span className="popup-scroll h-fit min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
             <AnimatePresence>
               {[...dms.entries()].map(([key, value]) => (
-                <DmDisplay
+                <ItemDisplay
                   key={key}
-                  dm={value}
+                  size={140}
+                  title={value.name}
+                  icon={value.pfp}
+                  deleteable={true}
+                  onDeleteClick={() => removeDm(value.id)}
+                  selectable={true}
                   onSelect={() => handleDmSelect(value.id)}
                 />
               ))}
