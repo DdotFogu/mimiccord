@@ -9,16 +9,16 @@ import { DM } from "../../types/directmessage.ts";
 
 type PopupProps = {
   enabled: boolean;
-  onPopupExit: () => void;
+  onExit: () => void;
 };
 
-export const DMPopup = ({ enabled, onPopupExit }: PopupProps) => {
+export const DMPopup = ({ enabled, onExit }: PopupProps) => {
   const { dms } = useDMs();
   const { addDm, selectDm, removeDm } = useDMsUpdate();
 
   const handleDmSelect = (id: string) => {
     selectDm(id);
-    onPopupExit();
+    onExit();
   };
 
   return (
@@ -29,9 +29,9 @@ export const DMPopup = ({ enabled, onPopupExit }: PopupProps) => {
           height={75}
           title="DMs"
           subtitle="Create Remove and Select Direct Messages to Edit"
-          close={() => onPopupExit()}
+          close={() => onExit()}
         >
-          <span className="popup-scroll h-fit min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
+          <span className="popup-scroll min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
             <AnimatePresence>
               {[...dms.entries()].map(([key, value]) => (
                 <ItemDisplay

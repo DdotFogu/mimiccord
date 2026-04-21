@@ -9,7 +9,7 @@ import { Message } from "./message";
 
 export class DM {
   public messages: Message[];
-  public members: Map<string, { user: User }>;
+  public members: Map<string, User>;
   public owner: User | undefined;
   public group: boolean;
   public name: string;
@@ -19,14 +19,14 @@ export class DM {
   constructor(
     _id: string = crypto.randomUUID(),
     _messages: Message[] = [],
-    _members: User[] | Map<string, { user: User }> = [],
+    _members: User[] | Map<string, User> = [],
     _owner: User | undefined = undefined,
     _group: boolean = false,
-    _name: string = "Name",
+    _name: string = "New Direct Messages",
     _pfp: string = pfpDefault,
   ) {
     this.messages = _messages;
-    this.members = new Map<string, { user: User }>();
+    this.members = new Map<string, User>();
     this.owner = _owner;
     this.group = _group;
     this.name = _name;
@@ -36,7 +36,7 @@ export class DM {
     if (Array.isArray(_members)) {
       _members.forEach((user) => {
         if (!this.members.has(user.id)) {
-          this.members.set(user.id, { user: user });
+          this.members.set(user.id, user);
         }
       });
     } else {
@@ -49,8 +49,8 @@ export class DM {
   clone(): DM {
     return new DM(
       this.id,
-      this.messages,
-      this.members,
+      [...this.messages],
+      new Map(this.members),
       this.owner,
       this.group,
       this.name,
@@ -105,7 +105,7 @@ export class DM {
 
   public addMember(_user: User) {
     if (!this.members.has(_user.id)) {
-      this.members.set(_user.id, { user: _user });
+      this.members.set(_user.id, _user);
       this.updateGroup();
     }
   }
@@ -137,9 +137,9 @@ export class DM {
     if (size === 2) {
       this.group = false;
 
-      const user = Array.from(this.members.values())[1].user;
-      this.setName(user.displayname);
-      this.setPfp(user.pfp);
+      const user = Array.from(this.members.values())[1];
+      //this.setName(user.displayname);
+      // this.setPfp(user.pfp);
     } else {
       this.group = true;
     }
@@ -147,7 +147,7 @@ export class DM {
 
   public allNames(): string {
     return Array.from(this.members.values())
-      .map((m) => m.user.displayname)
+      .map((m) => m.displayname)
       .join(", ");
   }
 }

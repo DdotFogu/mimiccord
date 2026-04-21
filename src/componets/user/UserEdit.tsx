@@ -1,7 +1,13 @@
 import { User, Presence } from "../../types/user.ts";
-import { useUsersUpdate, UserModSelection } from "../../context/UserContext";
+import {
+  useUsersUpdate,
+  UserModSelection,
+} from "../../context/UserContext.tsx";
 import DatePicker from "react-datepicker";
+import PictureInput from "../input/PictureInput.tsx";
 import "react-datepicker/dist/react-datepicker.css";
+import { getEventPfpUrl } from "../../utils/stringutils.ts";
+import InputField from "../input/InputField.tsx";
 
 type EditProps = {
   user: User;
@@ -54,7 +60,7 @@ export const UserEdit = ({ user }: EditProps) => {
         />
 
         <textarea
-          className="resize-none bg-darkermist px-3 py-2 rounded-md w-full popup-scroll"
+          className="resize-none bg-darkermist px-3 py-2 rounded-md w-full popup-scroll focus:outline-1 focus:ring-0"
           rows={10}
           placeholder="bio"
           onChange={(e) =>
@@ -72,31 +78,13 @@ export const UserEdit = ({ user }: EditProps) => {
       </span>
 
       <span className="w-full flex flex-col gap-1 items-center justify-start">
-        <input
-          id="pfp-upload"
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = (e as React.ChangeEvent<HTMLInputElement>).target
-              .files?.[0];
-            if (!file) return;
-
-            const url = URL.createObjectURL(file);
-            handleValueChange(UserModSelection.PFP, url);
-          }}
+        <PictureInput
+          size={124}
+          pfp={user.pfp}
+          onChange={(e) =>
+            handleValueChange(UserModSelection.PFP, getEventPfpUrl(e))
+          }
         />
-        <label htmlFor="pfp-upload" className="cursor-pointer group relative">
-          <img
-            className="rounded-full"
-            width={128}
-            height={128}
-            src={user.pfp}
-          />
-          <span className=" absolute inset-0 rounded-full bg-black/50 flex items-center justify-center text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-            Change
-          </span>
-        </label>
 
         <DatePicker
           className="bg-darkermist px-3 py-2 rounded-md"
@@ -128,33 +116,3 @@ export const UserEdit = ({ user }: EditProps) => {
 };
 
 export default UserEdit;
-
-type InputFieldProps = {
-  className?: string;
-  handleChange: (e: React.ChangeEvent) => void;
-  value: any;
-  type?: string;
-  placeholder?: string;
-  accept?: string;
-};
-const InputField = ({
-  className,
-  type,
-  handleChange,
-  value,
-  placeholder,
-  accept,
-}: InputFieldProps) => {
-  return (
-    <input
-      className={
-        className ? className : `bg-darkermist w-full px-3 py-2 rounded-md`
-      }
-      type={type ? type : ""}
-      accept={accept ? accept : ""}
-      placeholder={placeholder ? placeholder : ""}
-      onChange={(e) => handleChange(e)}
-      value={value}
-    />
-  );
-};

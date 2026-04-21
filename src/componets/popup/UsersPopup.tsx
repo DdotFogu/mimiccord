@@ -2,7 +2,7 @@ import { Popup } from "./Popup.tsx";
 import { PopupWindow } from "./PopupWindow.tsx";
 import { AnimatePresence } from "motion/react";
 import { User } from "../../types/user.ts";
-import { UserEdit } from "../sections/UserEdit.tsx";
+import { UserEdit } from "../user/UserEdit.tsx";
 import { AddDisplay } from "../display/AddDisplay.tsx";
 import { ItemDisplay } from "../display/ItemDisplay.tsx";
 
@@ -12,10 +12,10 @@ import { truncate } from "../../utils/stringutils.ts";
 
 type PopupProps = {
   enabled: boolean;
-  onPopupExit: () => void;
+  onExit: () => void;
 };
 
-export const UsersPopup = ({ enabled, onPopupExit }: PopupProps) => {
+export const UsersPopup = ({ enabled, onExit }: PopupProps) => {
   const { users } = useUsers();
   const { addUser, removeUser } = useUsersUpdate();
 
@@ -37,7 +37,7 @@ export const UsersPopup = ({ enabled, onPopupExit }: PopupProps) => {
           height={75}
           title="Users"
           subtitle="Create Remove and Edit Users"
-          close={() => onPopupExit()}
+          close={() => onExit()}
         >
           <span className=" popup-scroll h-fit min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
             <AnimatePresence>

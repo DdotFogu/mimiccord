@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import Icon from "../Icon.tsx";
+import Icon from "../icon/Icon.tsx";
 
 type DisplayProps = {
   onClick: () => void;

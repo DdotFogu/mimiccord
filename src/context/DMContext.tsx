@@ -4,7 +4,7 @@ import { DM } from "../types/directmessage";
 const DMContext = React.createContext<{
   dms: Map<string, DM>;
   selectedDm: string | null;
-  getDm: (target: string) => DM | undefined;
+  getDm: (target: string | null) => DM | null;
 }>({
   dms: new Map(),
   selectedDm: "",
@@ -98,8 +98,8 @@ export function DMProvider({ children }: any) {
     if (target === selectedDm) setSelectedDm(null);
   };
 
-  const getDm = (target: string): DM | undefined => {
-    return dms.get(target);
+  const getDm = (target: string | null): DM | null => {
+    return target ? dms.get(target)! : null;
   };
 
   useEffect(() => {

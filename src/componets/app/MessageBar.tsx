@@ -1,16 +1,25 @@
-import { IconBtn } from "./IconBtn.tsx";
-import { useDMsUpdate, DMModSelection } from "../context/DMContext";
-import { DM } from "../types/directmessage.ts";
-import { useUsers } from "../context/UserContext";
+import { IconBtn } from "../icon/IconBtn.tsx";
+import {
+  useDMsUpdate,
+  useDMs,
+  DMModSelection,
+} from "../../context/DMContext.tsx";
+import { DM } from "../../types/directmessage.ts";
+import { useUsers } from "../../context/UserContext.tsx";
 import { useState } from "react";
-import { Message, Content } from "../types/message";
-import Icon from "./Icon";
+import { Message, Content } from "../../types/message.ts";
+import Icon from "../icon/Icon.tsx";
 
-type BarProps = {
-  dm: DM | undefined;
-};
+type BarProps = {};
 
-export const MessageBar = ({ dm }: BarProps) => {
+export const MessageBar = ({}: BarProps) => {
+  const { selectedDm, getDm } = useDMs();
+  const { modDm } = useDMsUpdate();
+  const { getUser } = useUsers();
+  const [content, setContent] = useState<Content>(new Content(""));
+
+  const dm: DM | null = getDm(selectedDm);
+
   if (!dm) {
     return (
       <div className="text-[#72767D] bg-[#40444B] h-14 w-full flex flex-row justify-center items-center rounded-lg px-4">
@@ -19,19 +28,14 @@ export const MessageBar = ({ dm }: BarProps) => {
     );
   }
 
-  const { modDm } = useDMsUpdate();
-  const { getUser } = useUsers();
-  const [content, setContent] = useState<Content>(new Content(""));
-
-  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setContent(new Content(e.target.value));
-  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === `Enter` && !content.isEmpty()) {
       modDm(
         DMModSelection.AddMessage,
-        dm!.id,
+        dm.id,
         new Message(getUser("superuser"), new Date(), content),
       );
       setContent(new Content(""));

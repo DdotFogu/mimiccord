@@ -1,6 +1,9 @@
 import { motion } from "motion/react";
 import { truncate } from "../../utils/stringutils.ts";
-import Icon from "../Icon.tsx";
+import Icon from "../icon/Icon.tsx";
+import IconBtn from "../icon/IconBtn.tsx";
+import SelectableAvatar from "../user/SelectableAvatar.tsx";
+import Avatar from "../user/Avatar.tsx";
 
 type DisplayProps = {
   size?: number;
@@ -32,10 +35,7 @@ export const ItemDisplay = ({
       initial={{ opacity: 0, y: -15 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.4, delay: 0.2 } }}
       exit={{ opacity: 0, y: -15, transition: { duration: 0.25 } }}
-      whileHover={
-        selectable ? { scale: 1.08, transition: { duration: 0.5 } } : {}
-      }
-      onClick={selectable ? () => onSelect!() : () => {}}
+      whileHover={{ y: -3, transition: { duration: 0.25 } }}
     >
       {title && (
         <span className=" font-semibold text-center min-h-6 max-w-35.5 flex flex-col truncate shrink">
@@ -43,19 +43,32 @@ export const ItemDisplay = ({
         </span>
       )}
 
-      {icon && <img className="rounded-full" width={70} src={icon} />}
+      {icon && selectable ? (
+        <SelectableAvatar
+          size={75}
+          pfp={icon}
+          title={"Select"}
+          onClick={onSelect}
+        />
+      ) : (
+        <>{icon && <Avatar size={75} pfp={icon} />}</>
+      )}
 
-      <span className="flex flex-row justify-center items-center w-fit gap-5 ">
+      <span className="flex flex-row justify-center items-center w-fit gap-3 ">
         {editable && (
-          <button className=" cursor-pointer" onClick={() => onEditClick!()}>
-            <Icon id="icon-edit" size={20} />
-          </button>
+          <IconBtn
+            svg={<Icon id="icon-edit" size={20} />}
+            onClick={onEditClick}
+            className="cursor-pointer"
+          />
         )}
 
         {deleteable && (
-          <button className="cursor-pointer" onClick={() => onDeleteClick!()}>
-            <Icon id="icon-delete" size={20} />
-          </button>
+          <IconBtn
+            svg={<Icon id="icon-delete" size={20} />}
+            onClick={onDeleteClick}
+            className="cursor-pointer"
+          />
         )}
       </span>
     </motion.div>

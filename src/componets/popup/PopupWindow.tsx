@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import Icon from "../Icon.tsx";
+import Icon from "../icon/Icon.tsx";
 
 type WindowProps = {
   children?: React.ReactNode;
@@ -34,11 +34,13 @@ const PopupClose = ({ close }: CloseProps) => {
 
 const PopupHeader = ({ title, subtitle, close }: HeaderProps) => {
   return (
-    <div className="w-full h-fit bg-darkermist py-3 px-8 rounded-t-md flex flex-row items-center justify-center gap-2">
+    <div className="relative w-full h-fit bg-darkermist py-3 px-8 rounded-t-md flex flex-row items-center justify-center">
       <span className="font-bold text-white mr-auto shrink-0">{title}</span>
-      <span className="font-semibold text-mist hidden sm:block truncate min-w-0 shrink">
+
+      <span className="absolute left-1/2 -translate-x-1/2 font-semibold text-mist hidden sm:block truncate max-w-[40%]">
         {subtitle}
       </span>
+
       <PopupClose close={close} />
     </div>
   );

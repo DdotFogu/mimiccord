@@ -23,7 +23,7 @@ export class User {
     displayname: string = "Displayname",
     pfp: string = pfpDefault,
     bio: string = "Bio",
-    status: string = "Offline",
+    status: string = "Status",
     joinDate: Date = new Date(),
     presence: Presence = Presence.Offline,
     id: string = crypto.randomUUID(),

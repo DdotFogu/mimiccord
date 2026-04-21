@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router";
 import Creator from "./pages/Creator";
 import Fakecord from "./pages/Fakecord";
 import Landing from "./pages/Landing";
-import SpriteSheet from "./componets/SpriteSheet.tsx";
+import SpriteSheet from "./componets/icon/SpriteSheet.tsx";
 
 function App() {
   return (
