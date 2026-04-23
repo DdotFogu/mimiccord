@@ -80,7 +80,9 @@ export function DMProvider({ children }: any) {
     if (!method || !dm) return;
 
     const updated = dm.clone();
-    (updated[method] as Function)(value);
+
+    const args = Array.isArray(value) ? value : [value];
+    (updated[method] as Function)(...args);
 
     setDms(new Map(dms.set(updated.id, updated)));
   };

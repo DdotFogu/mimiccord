@@ -1,7 +1,9 @@
-import { usePopupsUpdate } from "../context/PopupContext.tsx";
-import { MessageBar } from "../componets/app/MessageBar.tsx";
+import { MessagesEditor } from "../componets/message/MessagesEditor.tsx";
+import { MessageBar } from "../componets/message/MessageBar.tsx";
 import DmEdit from "../componets/dm/DmEdit.tsx";
 import Icon from "../componets/icon/Icon.tsx";
+
+import { usePopupsUpdate } from "../context/PopupContext.tsx";
 
 type PopupBtnProps = {
   title: string;
@@ -26,20 +28,19 @@ const Creator = () => {
 
   return (
     <>
-      <div className="flex flex-col w-fit justify-start items-start gap-3 p-5">
-        <PopupBtn
-          title="Users"
-          onClick={() => open("users")}
-          icon={<Icon id="icon-users" />}
-        />
-        <PopupBtn
-          title="Direct Messages"
-          onClick={() => open("dms")}
-          icon={<Icon id="icon-message" />}
-        />
-      </div>
+      <PopupBtn
+        title="Users"
+        onClick={() => open("users")}
+        icon={<Icon id="icon-users" />}
+      />
+      <PopupBtn
+        title="Direct Messages"
+        onClick={() => open("dms")}
+        icon={<Icon id="icon-message" />}
+      />
       <DmEdit onAddClick={() => open("addusers")} />
       <MessageBar />
+      <MessagesEditor />
     </>
   );
 };

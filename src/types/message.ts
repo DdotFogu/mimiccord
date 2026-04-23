@@ -1,5 +1,3 @@
-import { User } from "./user";
-
 // add support for images, gifs, and vids
 
 export class Content {
@@ -7,6 +5,10 @@ export class Content {
 
   constructor(_text: string = "Lorem Ispum") {
     this.text = _text;
+  }
+
+  copy(): Content {
+    return new Content(this.text);
   }
 
   public setText(_text: string) {
@@ -21,12 +23,12 @@ export class Content {
 // add support for reactions and replys
 
 export class Message {
-  public owner: User; // <- change this to id string
+  public owner: string; // <- change this to id string
   public sentDate: Date;
   public content: Content;
 
   constructor(
-    owner: User,
+    owner: string,
     sentDate: Date = new Date(),
     content: Content = new Content(),
   ) {
@@ -35,7 +37,11 @@ export class Message {
     this.content = content;
   }
 
-  public setOwner(_owner: User) {
+  copy(): Message {
+    return new Message(this.owner, this.sentDate, this.content.copy());
+  }
+
+  public setOwner(_owner: string) {
     this.owner = _owner;
   }
 

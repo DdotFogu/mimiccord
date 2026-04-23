@@ -155,7 +155,7 @@ export const EditUser = ({ user }: { user: User }) => {
         />
 
         <DatePicker
-          className="bg-darkermist px-3 py-2 rounded-md"
+          className="bg-darkermist px-3 py-2 rounded-md focus:outline-1 focus:ring-0"
           selected={user.joinDate}
           showYearDropdown
           onChange={(date: Date | null) =>

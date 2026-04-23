@@ -35,7 +35,7 @@ const DmEdit = ({ onAddClick }: EditProps) => {
   const handleCrownClick = (id: string) => modDm(DMModSelection.Owner, dm, id);
 
   return (
-    <div className="w-[15%] h-[30%] min-w-37.5 bg-darkmist rounded-md flex flex-col">
+    <div className="w-[15%] h-[30%] min-w-38.5 bg-darkmist rounded-md flex flex-col">
       <Header />
 
       <span className="flex flex-col flex-1 min-h-0 px-2 py-1 gap-1 text-[#72767D]">
@@ -48,7 +48,7 @@ const DmEdit = ({ onAddClick }: EditProps) => {
           />
         </div>
 
-        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto gap-1">
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto overflow-x-hidden gap-1">
           <AnimatePresence>
             {[...dm.members].map((id) => (
               <UserItem
@@ -112,7 +112,7 @@ const UserItem = ({ user, onDeleteClick, onCrownClick }: ItemProps) => {
   const { selectedDm, getDm } = useDMs();
   const dm: DM | null = getDm(selectedDm);
 
-  if (!dm) return <></>;
+  if (!dm) return null;
 
   return (
     <motion.span
@@ -128,7 +128,9 @@ const UserItem = ({ user, onDeleteClick, onCrownClick }: ItemProps) => {
       />
       {truncate(user.username, 10)}
       {dm.isOwner(user.id) ? (
-        <Icon id="icon-crownstatic" size={20} className="ml-auto mr-1.5" />
+        <span className="min-w-8 min-h-8 flex justify-center items-center rounded-lg ml-auto">
+          <Icon id="icon-crownstatic" size={20} />
+        </span>
       ) : (
         <IconBtn
           svg={<Icon id="icon-crown" size={20} />}
@@ -136,11 +138,13 @@ const UserItem = ({ user, onDeleteClick, onCrownClick }: ItemProps) => {
           className="ml-auto cursor-pointer"
         />
       )}
-      <IconBtn
-        svg={<Icon id="icon-delete" size={20} />}
-        onClick={onDeleteClick}
-        className="cursor-pointer"
-      />
+      {user.id !== "superuser" && (
+        <IconBtn
+          svg={<Icon id="icon-delete" size={20} />}
+          onClick={onDeleteClick}
+          className="cursor-pointer"
+        />
+      )}
     </motion.span>
   );
 };

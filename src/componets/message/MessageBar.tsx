@@ -5,7 +5,6 @@ import {
   DMModSelection,
 } from "../../context/DMContext.tsx";
 import { DM } from "../../types/directmessage.ts";
-import { useUsers } from "../../context/UserContext.tsx";
 import { useState } from "react";
 import { Message, Content } from "../../types/message.ts";
 import Icon from "../icon/Icon.tsx";
@@ -15,7 +14,6 @@ type BarProps = {};
 export const MessageBar = ({}: BarProps) => {
   const { selectedDm, getDm } = useDMs();
   const { modDm } = useDMsUpdate();
-  const { getUser } = useUsers();
   const [content, setContent] = useState<Content>(new Content(""));
 
   const dm: DM | null = getDm(selectedDm);
@@ -36,7 +34,7 @@ export const MessageBar = ({}: BarProps) => {
       modDm(
         DMModSelection.AddMessage,
         dm.id,
-        new Message(getUser("superuser"), new Date(), content),
+        new Message("superuser", new Date(), content),
       );
       setContent(new Content(""));
     }

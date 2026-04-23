@@ -14,8 +14,8 @@ export class DM {
   constructor(
     _id: string = crypto.randomUUID(),
     _messages: Message[] = [],
-    _members: Set<string> = new Set(),
-    _owner: string | undefined = undefined,
+    _members: Set<string> = new Set(["superuser"]),
+    _owner: string | undefined = "superuser",
     _group: boolean = false,
     _name: string = "New Direct Messages",
     _pfp: string = pfpDefault,
