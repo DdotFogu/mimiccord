@@ -63,6 +63,27 @@ const Add = ({ size, className }: IconProps): React.ReactElement => {
   );
 };
 
+const Crown = ({ size, className }: IconProps): React.ReactElement => {
+  return (
+    <motion.svg
+      initial={{ fill: "#9D9EA5" }}
+      whileHover={{ fill: "#d78900", transition: { duration: 0.25 } }}
+      className={`fill-mist ${className}`}
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      aria-describedby="«rbf»"
+      aria-hidden="true"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg"
+      height={size}
+      width={size}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path d="M5 18a1 1 0 0 0-1 1 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 1 1 0 0 0-1-1H5ZM3.04 7.76a1 1 0 0 0-1.52 1.15l2.25 6.42a1 1 0 0 0 .94.67h14.55a1 1 0 0 0 .95-.71l1.94-6.45a1 1 0 0 0-1.55-1.1l-4.11 3-3.55-5.33.82-.82a.83.83 0 0 0 0-1.18l-1.17-1.17a.83.83 0 0 0-1.18 0l-1.17 1.17a.83.83 0 0 0 0 1.18l.82.82-3.61 5.42-4.41-3.07Z"></path>
+    </motion.svg>
+  );
+};
+
 type IconProps = {
   id: string;
   size?: number;
@@ -77,7 +98,10 @@ const iconMap: Record<
   "icon-edit": Edit,
   "icon-close": Close,
   "icon-add": Add,
+  "icon-crown": Crown,
 };
+
+// should be able to pass in animation props into icon <- GOOD IDEA DO THIS
 
 const Icon = ({ id, size = 24, className }: IconProps) => {
   const IconComponent = iconMap[id];

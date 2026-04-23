@@ -1,6 +1,8 @@
 // prettier-ignore
 export const SpriteSheet = () => (
   <svg xmlns="http://www.w3.org/2000/svg" style={{ display: "none" }}>
+    <symbol id="icon-crownstatic" viewBox="0 0 24 24"><svg xmlnsXlink="http://www.w3.org/1999/xlink" aria-describedby="«rbf»" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="oklab(0.694401 0.0519173 0.141349)" d="M5 18a1 1 0 0 0-1 1 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 1 1 0 0 0-1-1H5ZM3.04 7.76a1 1 0 0 0-1.52 1.15l2.25 6.42a1 1 0 0 0 .94.67h14.55a1 1 0 0 0 .95-.71l1.94-6.45a1 1 0 0 0-1.55-1.1l-4.11 3-3.55-5.33.82-.82a.83.83 0 0 0 0-1.18l-1.17-1.17a.83.83 0 0 0-1.18 0l-1.17 1.17a.83.83 0 0 0 0 1.18l.82.82-3.61 5.42-4.41-3.07Z"></path></svg></symbol>
+    
     <symbol id="icon-message" viewBox="0 0 960 960"><svg xmlns="http://www.w3.org/2000/svg"height="960px"viewBox="0 -960 960 960"width="960px"fill="#e3e3e3"><path d="M80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Z" /></svg></symbol>
     
     <symbol id="icon-users" viewBox="0 0 960 960" ><svg xmlns="http://www.w3.org/2000/svg"height="960px"viewBox="0 -960 960 960"width="960px"fill="#e3e3e3"><path d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM247-527q-47-47-47-113t47-113q47-47 113-47t113 47q47 47 47 113t-47 113q-47 47-113 47t-113-47Zm466 0q-47 47-113 47-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113q0 66-47 113Z" /></svg></symbol>

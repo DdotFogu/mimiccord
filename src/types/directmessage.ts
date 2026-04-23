@@ -3,7 +3,6 @@ import pfpDefault from "../assets/pfps/default-grey.webp";
 import { User } from "./user";
 import { Message } from "./message";
 
-// add prints for debugging
 // there must always be an owner,
 // undef owner is fine for now as I prototype the first build
 
@@ -57,8 +56,6 @@ export class DM {
       this.pfp,
     );
   }
-
-  // should be able to pass in nothing with new Message
 
   public addMessage(_message: Message): void {
     this.messages.push(_message);
@@ -114,6 +111,7 @@ export class DM {
     const idToRemove: string = this.getMemberId(_target);
 
     if (this.members.has(idToRemove)) {
+      if (this.members.get(idToRemove) === this.owner) this.owner = undefined;
       this.members.delete(idToRemove);
       this.updateGroup();
     }
@@ -131,18 +129,30 @@ export class DM {
     this.pfp = _pfp;
   }
 
+  public setOwner(target: string) {
+    const user = this.members.get(target);
+    if (user) this.owner = user;
+  }
+
+  public isOwner(target: User): boolean {
+    return this.owner === target;
+  }
+
   public updateGroup() {
     const size: number = this.members.size;
 
     if (size === 2) {
       this.group = false;
 
-      const user = Array.from(this.members.values())[1];
-      //this.setName(user.displayname);
+      // const user = Array.from(this.members.values())[1];
+      // this.setName(user.displayname);
       // this.setPfp(user.pfp);
     } else {
       this.group = true;
     }
+
+    if (!this.owner && this.members.size > 0)
+      this.setOwner(this.members.values().next().value!.id);
   }
 
   public allNames(): string {

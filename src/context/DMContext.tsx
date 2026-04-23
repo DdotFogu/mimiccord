@@ -40,6 +40,7 @@ export const DMModSelection = {
   RemoveMessage: 5,
   SetMessage: 6,
   SwapMessages: 7,
+  Owner: 8,
 } as const;
 export type DMModSelection =
   (typeof DMModSelection)[keyof typeof DMModSelection];
@@ -53,6 +54,7 @@ const MOD_METHOD_MAP: Record<DMModSelection, keyof DM> = {
   [DMModSelection.RemoveMessage]: "removeMessage",
   [DMModSelection.SetMessage]: "setMessage",
   [DMModSelection.SwapMessages]: "swapMessages",
+  [DMModSelection.Owner]: "setOwner",
 };
 
 export function DMProvider({ children }: any) {

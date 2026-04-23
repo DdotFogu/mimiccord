@@ -28,6 +28,8 @@ const DmEdit = ({ onAddClick }: EditProps) => {
   const handleDeleteClick = (u: User) =>
     modDm(DMModSelection.RemoveMember, dm, u);
 
+  const handleCrownClick = (u: User) => modDm(DMModSelection.Owner, dm, u.id);
+
   return (
     <div className="w-[15%] h-[30%] min-w-37.5 bg-darkmist rounded-md flex flex-col">
       <Header />
@@ -42,13 +44,14 @@ const DmEdit = ({ onAddClick }: EditProps) => {
           />
         </div>
 
-        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto gap-2 px-2">
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
           <AnimatePresence>
             {[...dm.members.entries()].map(([key, value]) => (
               <UserItem
                 key={key}
                 user={value}
                 onDeleteClick={() => handleDeleteClick(value)}
+                onCrownClick={() => handleCrownClick(value)}
               />
             ))}
           </AnimatePresence>
@@ -97,23 +100,42 @@ const Header = () => {
 
 type ItemProps = {
   user: User;
-  onDeleteClick: () => void;
+  onDeleteClick?: () => void;
+  onCrownClick?: () => void;
 };
 
-const UserItem = ({ user, onDeleteClick }: ItemProps) => {
+const UserItem = ({ user, onDeleteClick, onCrownClick }: ItemProps) => {
+  const { selectedDm, getDm } = useDMs();
+  const dm: DM | null = getDm(selectedDm);
+
+  if (!dm) return <></>;
+
   return (
     <motion.span
       initial={{ opacity: 0, y: -15 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.4, delay: 0.2 } }}
       exit={{ opacity: 0, y: -15, transition: { duration: 0.25 } }}
-      className="w-full h-fit flex flex-row gap-2 items-center"
+      className="w-full h-fit flex flex-row 2xl:gap-2 items-center"
     >
-      <Avatar size={32} pfp={user.pfp} />
+      <Avatar
+        size={32}
+        pfp={user.pfp}
+        className="2xl:flex hidden rounded-full object-cover"
+      />
       {truncate(user.username, 10)}
+      {dm.isOwner(user) ? (
+        <Icon id="icon-crownstatic" size={20} className="ml-auto mr-1.5" />
+      ) : (
+        <IconBtn
+          svg={<Icon id="icon-crown" size={20} />}
+          onClick={onCrownClick}
+          className="ml-auto cursor-pointer"
+        />
+      )}
       <IconBtn
         svg={<Icon id="icon-delete" size={20} />}
         onClick={onDeleteClick}
-        className="ml-auto cursor-pointer"
+        className="cursor-pointer"
       />
     </motion.span>
   );
