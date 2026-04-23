@@ -3,9 +3,6 @@ import pfpDefault from "../assets/pfps/default-grey.webp";
 import { User } from "./user";
 import { Message } from "./message";
 
-// there must always be an owner,
-// undef owner is fine for now as I prototype the first build
-
 export class DM {
   public messages: Message[];
   public members: Map<string, User>;

@@ -35,7 +35,6 @@ export const ItemDisplay = ({
       initial={{ opacity: 0, y: -15 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.4, delay: 0.2 } }}
       exit={{ opacity: 0, y: -15, transition: { duration: 0.25 } }}
-      whileHover={{ y: -3, transition: { duration: 0.25 } }}
     >
       {title && (
         <span className=" font-semibold text-center min-h-6 max-w-35.5 flex flex-col truncate shrink">

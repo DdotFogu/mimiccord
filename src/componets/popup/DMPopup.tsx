@@ -1,35 +1,40 @@
-import { Popup } from "./Popup.tsx";
-import { PopupWindow } from "./PopupWindow.tsx";
+import { Popup, PopupWindow } from "./Popup.tsx";
 import { AnimatePresence } from "motion/react";
 import { AddDisplay } from "../display/AddDisplay.tsx";
 import { ItemDisplay } from "../display/ItemDisplay.tsx";
 
-import { useDMs, useDMsUpdate } from "../../context/DMContext.tsx";
+import { useUsers } from "../../context/UserContext.tsx";
+import { User } from "../../types/user.ts";
+import { truncate } from "../../utils/stringutils.ts";
+import {
+  useDMs,
+  useDMsUpdate,
+  DMModSelection,
+} from "../../context/DMContext.tsx";
+import { usePopups, usePopupsUpdate } from "../../context/PopupContext.tsx";
 import { DM } from "../../types/directmessage.ts";
 
-type PopupProps = {
-  enabled: boolean;
-  onExit: () => void;
-};
+export const DMPopup = () => {
+  const { isOpen } = usePopups();
+  const { close } = usePopupsUpdate();
 
-export const DMPopup = ({ enabled, onExit }: PopupProps) => {
   const { dms } = useDMs();
   const { addDm, selectDm, removeDm } = useDMsUpdate();
 
   const handleDmSelect = (id: string) => {
     selectDm(id);
-    onExit();
+    close("dms");
   };
 
   return (
     <>
-      <Popup enabled={enabled}>
+      <Popup enabled={isOpen("dms")}>
         <PopupWindow
           width={50}
           height={75}
           title="DMs"
           subtitle="Create Remove and Select Direct Messages to Edit"
-          close={() => onExit()}
+          close={() => close("dms")}
         >
           <span className="popup-scroll min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
             <AnimatePresence>
@@ -55,3 +60,52 @@ export const DMPopup = ({ enabled, onExit }: PopupProps) => {
 };
 
 export default DMPopup;
+
+export const AddUserPopup = () => {
+  const { isOpen } = usePopups();
+  const { close } = usePopupsUpdate();
+
+  const { modDm } = useDMsUpdate();
+  const { users } = useUsers();
+
+  const { selectedDm, getDm } = useDMs();
+  const dm = getDm(selectedDm);
+
+  if (!dm) return <></>;
+
+  const handleUserSelect = (u: User) =>
+    modDm(DMModSelection.AddMember, dm.id, u);
+
+  return (
+    <>
+      <Popup enabled={isOpen("addusers")}>
+        <PopupWindow
+          width={50}
+          height={75}
+          title={truncate(dm.name, 30)}
+          subtitle="Select User to Add"
+          close={() => close("addusers")}
+        >
+          <span className="popup-scroll min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
+            <AnimatePresence>
+              {Object.entries(users)
+                .filter(
+                  ([_, value]) => ![...dm.members.values()].includes(value),
+                )
+                .map(([key, value]) => (
+                  <ItemDisplay
+                    key={key}
+                    size={140}
+                    title={value.username}
+                    icon={value.pfp}
+                    selectable={true}
+                    onSelect={() => handleUserSelect(value)}
+                  />
+                ))}
+            </AnimatePresence>
+          </span>
+        </PopupWindow>
+      </Popup>
+    </>
+  );
+};

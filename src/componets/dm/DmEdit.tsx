@@ -44,7 +44,7 @@ const DmEdit = ({ onAddClick }: EditProps) => {
           />
         </div>
 
-        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto gap-1">
           <AnimatePresence>
             {[...dm.members.entries()].map(([key, value]) => (
               <UserItem
