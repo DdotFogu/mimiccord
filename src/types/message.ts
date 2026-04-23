@@ -21,7 +21,7 @@ export class Content {
 // add support for reactions and replys
 
 export class Message {
-  public owner: User;
+  public owner: User; // <- change this to id string
   public sentDate: Date;
   public content: Content;
 

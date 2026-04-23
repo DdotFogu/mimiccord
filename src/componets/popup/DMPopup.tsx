@@ -73,8 +73,8 @@ export const AddUserPopup = () => {
 
   if (!dm) return <></>;
 
-  const handleUserSelect = (u: User) =>
-    modDm(DMModSelection.AddMember, dm.id, u);
+  const handleUserSelect = (id: string) =>
+    modDm(DMModSelection.AddMember, dm.id, id);
 
   return (
     <>
@@ -89,9 +89,7 @@ export const AddUserPopup = () => {
           <span className="popup-scroll min-h-41.5 flex flex-row flex-wrap justify-center items-center gap-5 overflow-y-auto overflow-x-hidden">
             <AnimatePresence>
               {Object.entries(users)
-                .filter(
-                  ([_, value]) => ![...dm.members.values()].includes(value),
-                )
+                .filter(([key, _]) => !dm.members.has(key))
                 .map(([key, value]) => (
                   <ItemDisplay
                     key={key}
@@ -99,7 +97,7 @@ export const AddUserPopup = () => {
                     title={value.username}
                     icon={value.pfp}
                     selectable={true}
-                    onSelect={() => handleUserSelect(value)}
+                    onSelect={() => handleUserSelect(value.id)}
                   />
                 ))}
             </AnimatePresence>

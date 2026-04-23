@@ -1,12 +1,11 @@
 import pfpDefault from "../assets/pfps/default-grey.webp";
 
-import { User } from "./user";
 import { Message } from "./message";
 
 export class DM {
   public messages: Message[];
-  public members: Map<string, User>;
-  public owner: User | undefined;
+  public members: Set<string>;
+  public owner: string | undefined;
   public group: boolean;
   public name: string;
   public pfp: string;
@@ -15,29 +14,20 @@ export class DM {
   constructor(
     _id: string = crypto.randomUUID(),
     _messages: Message[] = [],
-    _members: User[] | Map<string, User> = [],
-    _owner: User | undefined = undefined,
+    _members: Set<string> = new Set(),
+    _owner: string | undefined = undefined,
     _group: boolean = false,
     _name: string = "New Direct Messages",
     _pfp: string = pfpDefault,
   ) {
     this.messages = _messages;
-    this.members = new Map<string, User>();
+    this.members = new Set();
     this.owner = _owner;
     this.group = _group;
     this.name = _name;
     this.pfp = _pfp;
     this.id = _id;
-
-    if (Array.isArray(_members)) {
-      _members.forEach((user) => {
-        if (!this.members.has(user.id)) {
-          this.members.set(user.id, user);
-        }
-      });
-    } else {
-      this.members = _members;
-    }
+    this.members = _members;
 
     this.updateGroup();
   }
@@ -46,7 +36,7 @@ export class DM {
     return new DM(
       this.id,
       [...this.messages],
-      new Map(this.members),
+      new Set(this.members),
       this.owner,
       this.group,
       this.name,
@@ -97,25 +87,19 @@ export class DM {
       : target;
   }
 
-  public addMember(_user: User) {
-    if (!this.members.has(_user.id)) {
-      this.members.set(_user.id, _user);
+  public addMember(id: string) {
+    if (!this.members.has(id)) {
+      this.members.add(id);
       this.updateGroup();
     }
   }
 
-  public removeMember(_target: User | string) {
-    const idToRemove: string = this.getMemberId(_target);
-
-    if (this.members.has(idToRemove)) {
-      if (this.members.get(idToRemove) === this.owner) this.owner = undefined;
-      this.members.delete(idToRemove);
+  public removeMember(target: string) {
+    if (this.members.has(target)) {
+      if (target === this.owner) this.owner = undefined;
+      this.members.delete(target);
       this.updateGroup();
     }
-  }
-
-  public getMemberId(target: User | string): string {
-    return target instanceof User ? target.id : target;
   }
 
   public setName(_name: string) {
@@ -127,11 +111,10 @@ export class DM {
   }
 
   public setOwner(target: string) {
-    const user = this.members.get(target);
-    if (user) this.owner = user;
+    if (this.members.has(target)) this.owner = target;
   }
 
-  public isOwner(target: User): boolean {
+  public isOwner(target: string): boolean {
     return this.owner === target;
   }
 
@@ -149,12 +132,6 @@ export class DM {
     }
 
     if (!this.owner && this.members.size > 0)
-      this.setOwner(this.members.values().next().value!.id);
-  }
-
-  public allNames(): string {
-    return Array.from(this.members.values())
-      .map((m) => m.displayname)
-      .join(", ");
+      this.setOwner(this.members.values().next().value!);
   }
 }

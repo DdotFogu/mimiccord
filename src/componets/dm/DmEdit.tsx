@@ -13,22 +13,26 @@ import {
   useDMs,
   DMModSelection,
 } from "../../context/DMContext.tsx";
+import { useUsers } from "../../context/UserContext.tsx";
 
 type EditProps = {
   onAddClick: () => void;
 };
 
 const DmEdit = ({ onAddClick }: EditProps) => {
+  const { getUser } = useUsers();
+
   const { modDm } = useDMsUpdate();
   const { selectedDm, getDm } = useDMs();
+
   const dm: DM | null = getDm(selectedDm);
 
   if (!dm) return <></>;
 
-  const handleDeleteClick = (u: User) =>
-    modDm(DMModSelection.RemoveMember, dm, u);
+  const handleDeleteClick = (id: string) =>
+    modDm(DMModSelection.RemoveMember, dm, id);
 
-  const handleCrownClick = (u: User) => modDm(DMModSelection.Owner, dm, u.id);
+  const handleCrownClick = (id: string) => modDm(DMModSelection.Owner, dm, id);
 
   return (
     <div className="w-[15%] h-[30%] min-w-37.5 bg-darkmist rounded-md flex flex-col">
@@ -46,12 +50,12 @@ const DmEdit = ({ onAddClick }: EditProps) => {
 
         <div className="flex flex-col flex-1 min-h-0 overflow-y-auto gap-1">
           <AnimatePresence>
-            {[...dm.members.entries()].map(([key, value]) => (
+            {[...dm.members].map((id) => (
               <UserItem
-                key={key}
-                user={value}
-                onDeleteClick={() => handleDeleteClick(value)}
-                onCrownClick={() => handleCrownClick(value)}
+                key={id}
+                user={getUser(id)}
+                onDeleteClick={() => handleDeleteClick(id)}
+                onCrownClick={() => handleCrownClick(id)}
               />
             ))}
           </AnimatePresence>
@@ -123,7 +127,7 @@ const UserItem = ({ user, onDeleteClick, onCrownClick }: ItemProps) => {
         className="2xl:flex hidden rounded-full object-cover"
       />
       {truncate(user.username, 10)}
-      {dm.isOwner(user) ? (
+      {dm.isOwner(user.id) ? (
         <Icon id="icon-crownstatic" size={20} className="ml-auto mr-1.5" />
       ) : (
         <IconBtn
